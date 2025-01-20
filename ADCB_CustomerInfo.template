@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><entityResponse xmlns="urn:SASFraudManagement:RTF_3_2" entityType="${/entityRequest/entityType}">
+	<entityID>${/entityRequest/entityID}</entityID>
+	<contactID>${/entityRequest/contactID}</contactID>
+	<contactType>${/entityRequest/contactType}</contactType>
+	<multiOrg>${/entityRequest/multiOrg}</multiOrg>
+	<blockGroupCode/>
+
+	
+	<detailGroup name="demographic">
+	
+		<detail name="GENDER">${GENDER}</detail>
+		<detail name="NON_RESIDENT_FLAG">${NON_RESIDENT_FLAG}</detail>
+		<detail name="CUSTOMER_SINCE">${CUSTOMER_SINCE}</detail>
+		<detail name="MOTHER_MAIDEN_NAME">${MOTHER_MAIDEN_NAME}</detail>
+		<detail name="FIRST_NAME">${FIRST_NAME}</detail>
+		<detail name="MIDDLE_NAME">${MIDDLE_NAME}</detail>
+		<detail name="LAST_NAME">${LAST_NAME}</detail>
+		<detail name="CUST_RM_NAME">${CUST_RM_NAME}</detail>
+		<detail name="NATIONALITY">${NATIONALITY}</detail>
+		<detail name="MARITIAL_STATUS">${MARITIAL_STATUS}</detail>
+		<detail name="CUSTOMER_TYPE">${CUSTOMER_TYPE}</detail>
+		<detail name="ROYAL_FLAG">${ROYAL_FLAG}</detail>
+		<detail name="VIP_FLAG">${VIP_FLAG}</detail>
+		<detail name="PEP_FLAG">${PEP_FLAG}</detail>
+		<detail name="CUSTOMER_SEGMENT">${CUSTOMER_SEGMENT}</detail>
+		<detail name="PASSPORT_NUMBER">${PASSPORT_NUMBER}</detail>
+		<detail name="PASSPORT_EXPIRY_DT">${PASSPORT_EXPIRY_DT}</detail>
+		<detail name="DESIGNATION">${DESIGNATION}</detail>
+		<detail name="VISA_EXPIRY_DT">${VISA_EXPIRY_DT}</detail>
+		<detail name="EMIRATES_ID_EXPIRY_DT">${EMIRATES_ID_EXPIRY_DT}</detail>
+		<detail name="VISA_NUMBER">${VISA_NUMBER}</detail>
+		<detail name="TRADE_LICENSE_NUM">${TRADE_LICENSE_NUM}</detail>
+		
+		
+
+	</detailGroup>
+	
+	<detailGroup name="contact">
+		<detail name="FULL_NAME">${FULL_NAME}</detail>
+		<detail name="ADDR_LINE_1">${ADDRESS_LINE_1}</detail>
+		<detail name="ADDR_LINE_2">${ADDRESS_LINE_2}</detail>
+		<detail name="ADDR_CITY_NAME">${CITY}</detail>
+		<detail name="ADDR_POSTAL_CODE">${ADDRESS_ZIP}</detail>
+		<detail name="ADDR_CNTRY_NAME">${COUNTRY}</detail>
+		<detail name="HOME_PHONE_1">${HOME_LANDLINE_NUMBER}</detail>
+		<detail name="WORK_PHONE_1">${OFFICE_LANDLINE_NUMBER}</detail>
+		<detail name="MOBILE_PHONE_1">${MOBILE_NUMBER}</detail>
+		<detail name="EMAIL">${EMAIL_ID}</detail>
+		<detail name="DATE_OF_BIRTH">${DATE_OF_BIRTH}</detail>
+		<detail name="PERSONAL_ID_NUM">${UAE_NATIONAL_ID}</detail>
+		<detail name="LANG_CODE">${LANGUAGE_PREFERENCE}</detail>
+	</detailGroup>
+
+	<systemBlock1/>
+	<systemBlock2/>
+	<transactionBlock/>
+	
+</entityResponse>

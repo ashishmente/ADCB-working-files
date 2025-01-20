@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/lang 
+       http://www.springframework.org/schema/lang/spring-lang.xsd">
+	   
+	   	<!-- creating listner for SFM UI message QUEUE /-->
+		<!--
+		<bean id="pooledConnectionFactory1" class="org.apache.activemq.pool.PooledConnectionFactory" init-method="start" destroy-method="stop">
+		<property name="maxConnections" value="10" />
+		<property name="maximumActiveSessionPerConnection" value="10" />
+		<property name="connectionFactory" >
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="failover:(tcp://${activemq_host_1}:${activemq_port},tcp://${activemq_host_2}:${activemq_port})?randomize=false" />
+			</bean>
+		</property>
+	</bean>
+	-->
+	 <bean id="pooledConnectionFactory1" class="org.apache.activemq.pool.PooledConnectionFactory" init-method="start" destroy-method="stop">
+		<property name="maxConnections" value="10" />
+		<property name="maximumActiveSessionPerConnection" value="10" />
+		<property name="connectionFactory" >
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://sfmserver.demo.sas.com:61616" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="jmsConfig4ActiceMq1" class="org.apache.camel.component.jms.JmsConfiguration">
+		<property name="connectionFactory" ref="pooledConnectionFactory1" />
+		<property name="transacted" value="false" />
+		<property name="concurrentConsumers" value="2" />
+		<property name="maxConcurrentConsumers" value="10"/>
+		<property name="deliveryPersistent" value="true" />
+		<property name="requestTimeout" value="10000" />
+		<property name="cacheLevelName"  value="CACHE_CONSUMER" />
+		<property name="timeToLive" value="30000" />
+	</bean>
+	
+	<bean id="activemq1" class="org.apache.camel.component.jms.JmsComponent">
+		<property name="configuration" ref="jmsConfig4ActiceMq1" />
+	</bean>
+	
+	<bean id="messageConverter" class="org.springframework.jms.support.converter.SimpleMessageConverter"/>
+	
+	<bean id="realTimeDemographicOutboundMapperCustomer" class="com.sas.finance.fraud.ol.demos.OutboundTemplateMapper">
+       <constructor-arg name="templateFilename" value="mappings/outbound/templates/Customer.template"/>
+    </bean>
+
+
+	<CamelContext id="activeMqRoutes" xmlns="http://camel.apache.org/schema/spring">
+
+		<route id="SFM_Real_Time_Demographic_1">
+            <from uri="activemq1:queue:{{saf_demographic_request_queue_name}}?disableReplyTo=true" />
+			
+  		    <setHeader headerName="JMSCorrelationID">
+                <simple>${header.JMSMessageID}</simple>
+            </setHeader>
+
+			<!-- Printing the body inside rtd.log /-->
+			<!--log message="Message in queue: ${body}" loggingLevel="INFO" /-->
+			<log message="RTD Request received from SFM UI" loggingLevel="INFO" />
+
+			<!--Calling groovy class to send JSON request for demographic details and receive response /-->
+			<bean ref="requestADCB" method="prepareADCBResponse"/>
+
+			<!--log message="Message in queue: ${body}" loggingLevel="INFO" /-->
+
+			<!--Transformation logic to retrieve info from incoming request and adding it into a map/-->
+					<choice id="checkingEntityAccount1">
+					<!--	<when>
+							<simple>${body[/entityRequest/entityType]} == 'A'</simple>
+							<bean id="realTimeDemographicObm1" ref="realTimeDemographicOutboundMapperAccount" method="map" />
+						</when> /-->
+						<when>
+							<simple>${body[/entityRequest/entityType]} == 'X'</simple>
+							<bean id="realTimeDemographicObm1" ref="realTimeDemographicOutboundMapperCustomer" method="map" />
+						</when>
+						
+					</choice>
+					
+			<log message="Message in queue 1: ${body}" loggingLevel="INFO" />
+
+			<!-- Placing the response in an XML format inside the reply queue of SFM UI /-->
+			<to uri="activemq1:queue:{{saf_demographic_reply_queue_name}}?disableReplyTo=true"/>
+
+			<log message="RTD Response sent to SFM UI" loggingLevel="INFO" />
+
+		</route>					
+		
+	</CamelContext>
+
+</beans>
