@@ -43,3 +43,6 @@ keytool -importcert -file /third/path/cert3.crt -keystore custom-truststore.jks 
 
 keytool -genkey -keyalg RSA -alias dummy -keystore custom-truststore.jks -storepass changeit -keypass changeit -validity 3650 -dname "CN=Dummy, OU=Test, O=Test, L=Test, ST=Test, C=US"
 
+keytool -list -keystore custom-truststore.jks -storepass changeit
+
+
