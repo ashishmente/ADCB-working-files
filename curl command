@@ -1,0 +1,6 @@
+curl -X POST "https://devmag.adcb.com/auth/oauth/v2/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     --data-urlencode "client_id=fe82e73c-9579-4e8a-ad33-9a3b86eedcc3" \
+     --data-urlencode "client_secret=b51c04e5-a205-4598-8138-426eada81e80" \
+     --data-urlencode "scope=AccountDetails AccountBalancesDetails CustomerPersonalDetails" \
+     --data-urlencode "grant_type=client_credentials"
