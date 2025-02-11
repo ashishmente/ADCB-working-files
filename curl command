@@ -32,3 +32,6 @@ keytool -list -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -store
 
 
 keytool -genkey -alias exampletruststore -keyalg RSA -keystore mytruststore.jks
+
+keytool -genkey -keyalg RSA -alias dummy -keystore custom-truststore.jks -storepass changeit -keypass changeit -validity 3650 -dname "CN=Dummy, OU=Test, O=Test, L=Test, ST=Test, C=US"
+
