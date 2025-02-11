@@ -24,3 +24,8 @@ java -XshowSettings:properties -version | grep 'javax.net.ssl.trustStore'
 javax.net.ssl.trustStore = /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts
 sudo keytool -importcert -trustcacerts -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -storepass changeit -alias myServerCert -file /etc/pki/tls/certs/ca-bundle.crt
 keytool -list -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -storepass changeit | grep myServerCert
+
+java -XshowSettings:properties -version | grep 'javax.net.ssl.trustStore'
+javax.net.ssl.trustStore = /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts
+sudo keytool -importcert -trustcacerts -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -storepass changeit -alias myServerCert -file /etc/pki/tls/certs/ca-bundle.crt
+keytool -list -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -storepass changeit | grep myServerCert
