@@ -4,3 +4,8 @@ curl -X POST "https://devmag.adcb.com/auth/oauth/v2/token" \
      --data-urlencode "client_secret=b51c04e5-a205-4598-8138-426eada81e80" \
      --data-urlencode "scope=AccountDetails AccountBalancesDetails CustomerPersonalDetails" \
      --data-urlencode "grant_type=client_credentials"
+
+curl -X GET "https://devmag.adcb.com/v2/customer/details?customerId=12369619" \
+     -H "Authorization: Bearer REPLACE_WITH_YOUR_TOKEN" \
+     -H "x-fapi-interaction-id: 32142" \
+     -H "Content-Type: application/json"
