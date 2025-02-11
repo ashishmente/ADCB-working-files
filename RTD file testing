@@ -1,0 +1,508 @@
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.*;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
+import org.apache.camel.Exchange;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.InputSource;
+
+
+
+public class RTDRequest {
+	
+private static Map map1 = Collections.synchronizedMap(new HashMap());
+
+	private static Document convertStringToXMLDocument(String xmlString) 
+		{
+			//Parser that produces DOM object trees from XML content
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			 
+			//API to obtain DOM Document instance
+			DocumentBuilder builder = null;
+			try
+			{
+				//Create DocumentBuilder with default configuration
+				builder = factory.newDocumentBuilder();
+				 
+				//Parse the content to Document object
+				Document doc = builder.parse(new InputSource(new StringReader(xmlString)));
+				return doc;
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+
+	public static Map<String, String> fetchCustomerInfo(String EntityID, Map<String, String> map) {
+		if (EntityID == null || EntityID.trim().isEmpty()) {
+			throw new IllegalArgumentException("EntityID cannot be null or empty");
+		}
+			/*
+			// SSL Configuration
+			System.setProperty("javax.net.ssl.trustStore", "path/to/client_truststore.jks");
+			System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+
+			// OAuth 2.0 Token Retrieval
+			String clientId = "fe82e73c-9579-4e8a-ad33-9a3b86eedcc3";
+			String clientSecret = "b51c04e5-a205-4598-8138-426eada81e80";
+			String tokenUrl = "https://devmag.adcb.com/auth/oauth/v2/token";
+			
+			System.out.println("Preparing to hit the token URL: " + tokenUrl);
+			
+			URL tokenUrlObj = new URL(tokenUrl);
+			HttpsURLConnection tokenConnection = (HttpsURLConnection) tokenUrlObj.openConnection();
+			tokenConnection.setRequestMethod("POST");
+			tokenConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			tokenConnection.setDoOutput(true);
+
+			// Updated scope based on the schema
+			String requestBody = "grant_type=client_credentials" +
+							   "&client_id=" + URLEncoder.encode(clientId, "UTF-8") +
+							   "&client_secret=" + URLEncoder.encode(clientSecret, "UTF-8") +
+							   "&scope=AccountDetails AccountBalancesDetails CustomerPersonalDetails";
+			
+			System.out.println("Token request body prepared: " + requestBody);
+
+			// Send token request
+			try (OutputStream os = tokenConnection.getOutputStream()) {
+				System.out.println("Sending token request...");
+				os.write(requestBody.getBytes(StandardCharsets.UTF_8));
+			}
+
+			// Parse the token response
+			System.out.println("Waiting for token response...");
+			String tokenResponse = "";
+			try (BufferedReader tokenReader = new BufferedReader(new InputStreamReader(tokenConnection.getInputStream()))) {
+				StringBuilder tokenContent = new StringBuilder();
+				String inputLine;
+				while ((inputLine = tokenReader.readLine()) != null) {
+					tokenContent.append(inputLine);
+				}
+				tokenResponse = tokenContent.toString();
+			}
+
+			System.out.println("Token response received: " + tokenResponse);
+			
+			JSONObject tokenJson = new JSONObject(tokenResponse);
+			String accessToken = tokenJson.optString("access_token");
+			if (accessToken == null || accessToken.isEmpty()) {
+				throw new IOException("Failed to obtain access token");
+			}
+			
+			tokenConnection.disconnect();
+			System.out.println("Access token obtained: " + accessToken);
+			
+			// Updated API endpoint based on the schema
+			//String customerId = URLEncoder.encode(EntityID, "UTF-8");
+			String customerId = EntityID;
+			String apiUrl = "https://devmag.adcb.com/v2/customer/details?customerId=" + customerId;
+			
+			System.out.println("Preparing to hit the customer info API URL: " + apiUrl);
+
+			URL apiURL = new URL(apiUrl);
+			HttpsURLConnection apiConnection = (HttpsURLConnection) apiURL.openConnection();
+			apiConnection.setRequestProperty("Content-Type", "application/json");
+			apiConnection.setRequestProperty("Authorization", "Bearer " + accessToken);
+			apiConnection.setRequestProperty("x-fapi-interaction-id", UUID.randomUUID().toString());
+			apiConnection.setRequestMethod("GET");
+
+			System.out.println("Connection established to " + apiUrl);
+			
+			String jsonResponse = "";
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(apiConnection.getInputStream()))) {
+				StringBuilder responseContent = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line);
+				}
+				jsonResponse = responseContent.toString();
+			}*/
+			JSONObject jsonObject = new JSONObject()
+            .put("Data", new JSONObject()
+                .put("Customer", new JSONObject()
+                    .put("CustomerPersonalDetails", new JSONObject()
+                        .put("ContactDetails", new JSONObject()
+                            .put("AddressZip", "84321")
+                            .put("Country", "UNITED ARAB EMIRATES")
+                            .put("City", "SHARJAH")
+                            .put("HomeLandlineNumber", "023431")
+                            .put("AddressLine2", "FLAT NO.: 204")
+                            .put("AddressLine1", "TEST")
+                            .put("MobileNumber", "971598796532")
+                            .put("PhoneNumber", "023322")
+                            .put("AddressLine3", "Test")
+                            .put("EmailId", "Email@adcb.com")
+                            .put("State", "SHARJAH")
+                            .put("OfficeLandlineNumber", "0233422")
+                            .put("Fax", "97123632")
+                        )
+                        .put("PersonalInfo", new JSONObject()
+                            .put("Gender", "Male")
+                            .put("ResidencyStatus", "Non-Resident")
+                            .put("RegistrationDate", "2021-05-01")
+                            .put("MotherMaidenName", "Jane Doe")
+                            .put("FullName", "John Michael Smith")
+                            .put("RMName", "Manager Name")
+                            .put("NationalityDesc", "Emirati")
+                            .put("MaritalStatus", "Single")
+                            .put("Category", "Premium")
+                            .put("LanguagePreference", "English")
+                            .put("DateofBirth", "1985-07-15")
+                        )
+                        .put("EmployerInfo", new JSONObject()
+                            .put("Designation", "Software Engineer")
+                        )
+                        .put("KYCInfo", new JSONObject()
+                            .put("PassportNumber", "A12345678")
+                            .put("ExpiryDate", "2030-12-31")
+                            .put("VisaExpiryDate", "2025-12-31")
+                            .put("UAENationalIdExpiryDate", "2028-12-31")
+                            .put("VisaNumber", "V12345")
+                            .put("TradeLicenseNumber", "TL12345")
+                            .put("UAENationalId", "UAE123456")
+                        )
+                    )
+                )
+            );
+			
+			System.out.println("Response received: " + jsonResponse);
+
+			// Parse JSON response according to the provided schema
+			JSONObject data = jsonObject.optJSONObject("Data");
+			if (data == null) {
+				throw new IOException("No Data object in response");
+			}
+
+			JSONObject customer = data.optJSONObject("Customer");
+			if (customer == null) {
+				throw new IOException("No Customer object in response");
+			}
+
+			JSONObject customerPersonalDetails = customer.optJSONObject("CustomerPersonalDetails");
+			if (customerPersonalDetails == null) {
+				throw new IOException("No CustomerPersonalDetails in response");
+			}
+
+			// Parse Contact Details
+			JSONObject contactDetails = customerPersonalDetails.optJSONObject("ContactDetails");
+			if (contactDetails != null) {
+				map.put("ADDRESS_ZIP", contactDetails.optString("AddressZip", ""));
+				map.put("COUNTRY", contactDetails.optString("Country", ""));
+				map.put("CITY", contactDetails.optString("City", ""));
+				map.put("HOME_LANDLINE_NUMBER", contactDetails.optString("HomeLandlineNumber", ""));
+				map.put("ADDRESS_LINE_1", contactDetails.optString("AddressLine1", ""));
+				map.put("ADDRESS_LINE_2", contactDetails.optString("AddressLine2", ""));
+				map.put("ADDRESS_LINE_3", contactDetails.optString("AddressLine3", ""));
+				map.put("MOBILE_NUMBER", contactDetails.optString("MobileNumber", ""));
+				map.put("PHONE_NUMBER", contactDetails.optString("PhoneNumber", ""));
+				map.put("EMAIL_ID", contactDetails.optString("EmailId", ""));
+				map.put("STATE", contactDetails.optString("State", ""));
+				map.put("OFFICE_LANDLINE_NUMBER", contactDetails.optString("OfficeLandlineNumber", ""));
+				map.put("FAX", contactDetails.optString("Fax", ""));
+			}
+
+			// Parse Personal Info
+			JSONObject personalInfo = customerPersonalDetails.optJSONObject("PersonalInfo");
+			if (personalInfo != null) {
+				map.put("GENDER", personalInfo.optString("Gender", ""));
+				map.put("NON_RESIDENT_FLAG", personalInfo.optString("ResidencyStatus", ""));
+				map.put("CUSTOMER_SINCE", personalInfo.optString("RegistrationDate", ""));
+				map.put("MOTHER_MAIDEN_NAME", personalInfo.optString("MotherMaidenName", ""));
+				
+				String fullName = personalInfo.optString("FullName", "").trim();
+				map.put("FULL_NAME", fullName);
+
+				// Process name parts
+				if (!fullName.isEmpty()) {
+					String[] nameParts = fullName.split("\\s+");
+					if (nameParts.length >= 3) {
+						map.put("FIRST_NAME", nameParts[0]);
+						map.put("MIDDLE_NAME", nameParts[1]);
+						map.put("LAST_NAME", nameParts[2]);
+					} else if (nameParts.length == 2) {
+						map.put("FIRST_NAME", nameParts[0]);
+						map.put("MIDDLE_NAME", "");
+						map.put("LAST_NAME", nameParts[1]);
+					} else if (nameParts.length == 1) {
+						map.put("FIRST_NAME", nameParts[0]);
+						map.put("MIDDLE_NAME", "");
+						map.put("LAST_NAME", "");
+					}
+				} else {
+					map.put("FIRST_NAME", "");
+					map.put("MIDDLE_NAME", "");
+					map.put("LAST_NAME", "");
+				}
+
+				map.put("CUST_RM_NAME", personalInfo.optString("RMName", ""));
+				map.put("NATIONALITY", personalInfo.optString("NationalityDesc", ""));
+				map.put("MARITIAL_STATUS", personalInfo.optString("MaritalStatus", ""));
+				String category = personalInfo.optString("Category", "");
+				map.put("CUSTOMER_TYPE", category);
+				map.put("ROYAL_FLAG", category);
+				map.put("VIP_FLAG", category);
+				map.put("PEP_FLAG", category);
+				map.put("CUSTOMER_SEGMENT", category);
+				map.put("LANGUAGE_PREFERENCE", personalInfo.optString("LanguagePreference", ""));
+				map.put("DATE_OF_BIRTH", personalInfo.optString("DateofBirth", ""));
+			}
+
+			// Parse Employer Info
+			JSONObject employerInfo = customerPersonalDetails.optJSONObject("EmployerInfo");
+			if (employerInfo != null) {
+				map.put("DESIGNATION", employerInfo.optString("Designation", ""));
+			}
+
+			// Parse KYC Info
+			JSONObject kycInfo = customerPersonalDetails.optJSONObject("KYCInfo");
+			if (kycInfo != null) {
+				map.put("PASSPORT_NUMBER", kycInfo.optString("PassportNumber", ""));
+				map.put("PASSPORT_EXPIRY_DT", kycInfo.optString("ExpiryDate", ""));
+				map.put("VISA_EXPIRY_DT", kycInfo.optString("VisaExpiryDate", ""));
+				map.put("EMIRATES_ID_EXPIRY_DT", kycInfo.optString("UAENationalIdExpiryDate", ""));
+				map.put("VISA_NUMBER", kycInfo.optString("VisaNumber", ""));
+				map.put("TRADE_LICENSE_NUM", kycInfo.optString("TradeLicenseNumber", ""));
+				map.put("UAE_NATIONAL_ID", kycInfo.optString("UAENationalId", ""));
+			}
+
+			//apiConnection.disconnect();
+			return map;
+			
+		} 	
+	
+	public void prepareADCBResponse(Exchange exchange) {
+		String textXml = exchange.getIn().getBody();
+		//System.out.println(textXml);
+		String textXml1 = textXml.replace('"','/');
+		String[] splitXml = textXml1.split("entityType=/", 2);
+		String newXml1 = splitXml[1].replaceFirst("/>", "</entityType>");
+		String textXml2 = "<entityRequest><entityType>" + newXml1;
+
+		Document doc = convertStringToXMLDocument(textXml2);
+		Map map = new HashMap();
+
+		String entityType = null;
+		String entityID = null;
+		String multiOrg = null;
+		String username = null;
+		String contactID = null;
+		String contactType = null;
+		try 
+			{
+				doc.getDocumentElement().normalize();
+					NodeList nList = doc.getElementsByTagName("entityRequest");
+					Node nNode = nList.item(0);
+					
+					Element eElement = (Element) nNode;
+					entityType = (eElement.getElementsByTagName("entityType")).item(0).getTextContent();
+			        entityID = (eElement.getElementsByTagName("entityID")).item(0).getTextContent();
+					multiOrg = (eElement.getElementsByTagName("multiOrg")).item(0).getTextContent();
+					username = (eElement.getElementsByTagName("username")).item(0).getTextContent(); /* Release 2 Addition*/
+					if((eElement.getElementsByTagName("contactID").item(0)) != null)
+					{	contactID = (eElement.getElementsByTagName("contactID")).item(0).getTextContent(); }
+					if((eElement.getElementsByTagName("contactType")).item(0) != null)
+					{	contactType = (eElement.getElementsByTagName("contactType")).item(0).getTextContent(); }
+						
+			} catch (Exception e) {
+				e.printStackTrace();
+		}
+		
+		switch (entityType)
+			{
+			/*case "A" : 
+				try {
+					TimeLimitedCodeBlock.runWithTimeout(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								MultifetchAccountInfo m1= new MultifetchAccountInfo(entityID);
+								Thread t1= new Thread(m1);
+								
+								t1.start(); 
+								
+
+								t1.join();
+							
+								//mapThread.putAll(map1);
+
+							}
+							catch (InterruptedException e) {
+								System.out.println("was interuupted! 1");
+							}
+						}
+					}, 3, TimeUnit.SECONDS);
+				}
+				catch (TimeoutException e) {
+					System.out.println("Got timeout! 2");
+				}
+				break;    */
+			case "X" : 
+				try {
+					TimeLimitedCodeBlock.runWithTimeout(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								MultifetchCustomerInfo m2= new MultifetchCustomerInfo(entityID);
+								Thread t2= new Thread(m2);
+								
+								
+				
+								t2.start(); 
+								t2.join();
+								
+							
+							}
+							catch (InterruptedException e) {
+								System.out.println("was interuupted! 3");
+							}
+						}
+					}, 3, TimeUnit.SECONDS);
+				}
+				catch (TimeoutException e) {
+					System.out.println("Got timeout! 4");
+				}
+				break;
+				
+			/*	case "B" : 
+				try {
+					TimeLimitedCodeBlock.runWithTimeout(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								MultifetchBalanceInfo m3= new MultifetchBalanceInfo();
+								Thread t3= new Thread(m3);
+								
+								
+				
+								t3.start(); 
+								t3.join();
+								
+							
+							}
+							catch (InterruptedException e) {
+								System.out.println("was interuupted! 5");
+							}
+						}
+					}, 3, TimeUnit.SECONDS);
+				}
+				catch (TimeoutException e) {
+					System.out.println("Got timeout! 6");
+				}
+				break;
+		                  */
+}
+map.putAll(map1);
+
+
+	if (contactType == null)
+			contactType = "Customer Id Missing";
+		if (contactID == null)
+			contactID = "Customer Id Missing";
+
+		if (entityType == 'X')
+		{
+			contactType = entityType;
+			contactID = entityID;	
+		}
+			
+		map.put("/entityRequest/entityType", entityType);
+		map.put("/entityRequest/entityID", entityID);
+		map.put("/entityRequest/multiOrg", multiOrg);
+		map.put("/entityRequest/contactID", contactID);
+		map.put("/entityRequest/contactType", contactType);
+	
+			exchange.getIn().setBody(map);
+
+    
+}
+
+}
+
+
+
+
+class MultifetchCustomerInfo implements Runnable{  
+    
+	private String entityID;
+
+	public MultifetchCustomerInfo(String _entityID) {
+		this.entityID = _entityID;
+	}
+	
+    @Override
+	public void run(){  
+		RTDRequest.fetchCustomerInfo(entityID,RTDRequest.map1); 
+	}
+}
+
+/*class MultifetchAccountInfo implements Runnable{  
+	
+	private String entityID;
+
+	public MultifetchAccountInfo(String _entityID) {
+		this.entityID = _entityID;
+	}
+	
+    @Override
+	public void run(){  
+		RTDRequest.fetchAccountInfo(entityID,RTDRequest.map1); 
+	}
+}
+*/
+
+class TimeLimitedCodeBlock {
+
+	public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
+		runWithTimeout(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				runnable.run();
+				return null;
+			}
+		}, timeout, timeUnit);
+	}
+
+	public static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		final Future<T> future = executor.submit(callable);
+		executor.shutdown(); // This does not cancel the already-scheduled task.
+		try {
+			return future.get(timeout, timeUnit);
+		}
+		catch (TimeoutException e) {
+			future.cancel(true);
+			throw e;
+		}
+		catch (ExecutionException e) {
+			//unwrap the root cause
+			Throwable t = e.getCause();
+			if (t instanceof Error) {
+				throw (Error) t;
+			} else if (t instanceof Exception) {
+				throw (Exception) t;
+			} else {
+				throw new IllegalStateException(t);
+			}
+		}
+	}
+
+}
