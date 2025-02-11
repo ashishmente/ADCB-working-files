@@ -20,3 +20,4 @@ curl -X GET "https://devmag.adcb.com/v2/balances?customerId=12369619" \
      -H "x-fapi-interaction-id: 321312"
 
 import java.nio.charset.StandardCharsets;
+java -XshowSettings:properties -version | grep 'javax.net.ssl.trustStore'
