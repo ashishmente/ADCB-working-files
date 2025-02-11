@@ -33,5 +33,13 @@ keytool -list -keystore /usr/lib/jvm/java-XX-openjdk/lib/security/cacerts -store
 
 keytool -genkey -alias exampletruststore -keyalg RSA -keystore mytruststore.jks
 
+keytool -delete -alias dummy -keystore custom-truststore.jks -storepass changeit
+keytool -importcert -file /path/to/certs/cert1.crt -keystore custom-truststore.jks -alias cert1 -storepass changeit -noprompt
+
+keytool -importcert -file /another/path/cert2.crt -keystore custom-truststore.jks -alias cert2 -storepass changeit -noprompt
+
+keytool -importcert -file /third/path/cert3.crt -keystore custom-truststore.jks -alias cert3 -storepass changeit -noprompt
+
+
 keytool -genkey -keyalg RSA -alias dummy -keystore custom-truststore.jks -storepass changeit -keypass changeit -validity 3650 -dname "CN=Dummy, OU=Test, O=Test, L=Test, ST=Test, C=US"
 
