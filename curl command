@@ -18,3 +18,5 @@ curl -X GET "https://devmag.adcb.com/v2/accounts/inquiry?customerId=10594877" \
 curl -X GET "https://devmag.adcb.com/v2/balances?customerId=12369619" \
      -H "Authorization: Bearer REPLACE_WITH_YOUR_TOKEN" \
      -H "x-fapi-interaction-id: 321312"
+
+import java.nio.charset.StandardCharsets;
