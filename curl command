@@ -9,3 +9,12 @@ curl -X GET "https://devmag.adcb.com/v2/customer/details?customerId=12369619" \
      -H "Authorization: Bearer REPLACE_WITH_YOUR_TOKEN" \
      -H "x-fapi-interaction-id: 32142" \
      -H "Content-Type: application/json"
+
+curl -X GET "https://devmag.adcb.com/v2/accounts/inquiry?customerId=10594877" \
+     -H "Authorization: Bearer REPLACE_WITH_YOUR_TOKEN" \
+     -H "x-fapi-interaction-id: 2wertyuihgfcdxcvb" \
+     -H "Content-Type: application/json"
+
+curl -X GET "https://devmag.adcb.com/v2/balances?customerId=12369619" \
+     -H "Authorization: Bearer REPLACE_WITH_YOUR_TOKEN" \
+     -H "x-fapi-interaction-id: 321312"
