@@ -1,0 +1,39 @@
+openssl pkcs12 -export \
+    -in client.crt \
+    -inkey client.key \
+    -certfile ca.crt \
+    -name client-key \
+    -out custom-keystore.p12 \
+    -password pass:changeit
+
+  keytool -importkeystore \
+    -srckeystore custom-keystore.p12 \
+    -srcstoretype PKCS12 \
+    -destkeystore custom-keystore.jks \
+    -deststoretype JKS \
+    -deststorepass changeit
+
+openssl pkcs12 -export -in client.crt -inkey client.key -out client.p12 -name mykey -passout pass:changeit
+keytool -importkeystore -srckeystore client.p12 -srcstoretype PKCS12 -srcstorepass changeit \
+        -destkeystore custom-keystore.jks -deststoretype JKS -deststorepass changeit
+keytool -list -v -keystore custom-keystore.jks -storepass changeit
+
+System.setProperty("javax.net.ssl.keyStore", "/path/to/custom-keystore.jks");
+System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+
+System.setProperty("javax.net.ssl.trustStore", "/path/to/custom-truststore.jks");
+System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+
+
+keytool -genkey -alias dummy -keyalg RSA -keystore custom-keystore.jks -storepass changeit \
+  -keypass changeit -validity 3650 -dname "CN=Dummy, OU=Test, O=Test, L=Test, ST=Test, C=US"
+  
+keytool -genkey -alias mykey -keyalg RSA -keystore custom-keystore.jks -storepass changeit -keypass changeit \
+  -validity 3650 -dname "CN=, OU=, O=, L=, ST=, C="
+  
+keytool -delete -alias dummy -keystore custom-keystore.jks -storepass changeit
+
+openssl pkcs12 -export -in mycert.crt -inkey mykey.key -out mycert.p12 -passout pass:changeit
+  
+keytool -importkeystore -srckeystore mycert.p12 -srcstoretype PKCS12 -srcstorepass changeit \
+        -destkeystore custom-keystore.jks -deststoretype JKS -deststorepass changeit
