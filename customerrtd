@@ -1,248 +1,147 @@
 import javax.net.ssl.KeyManagerFactory;
-
 import javax.net.ssl.SSLContext;
-
 import javax.net.ssl.TrustManagerFactory;
-
 import java.io.FileInputStream;
-
 import java.net.URI;
-
 import java.net.URLEncoder;
-
 import java.net.http.HttpClient;
-
 import java.net.http.HttpRequest;
-
 import java.net.http.HttpResponse;
-
 import java.nio.charset.StandardCharsets;
-
 import java.security.KeyStore;
-
 import java.util.Map;
-
 import java.util.UUID;
  
 public class CustomerInfoFetcher {
  
     public static Map<String, String> fetchCustomerInfo(String EntityID, Map<String, String> map) throws Exception {
-
         if (EntityID == null || EntityID.trim().isEmpty()) {
-
             throw new IllegalArgumentException("EntityID cannot be null or empty");
-
         }
  
         // SSL Configuration for mTLS
-
         String keystorePath = "/opt/sas/viya/config/etc/boss/mycert.p12";
-
         String keystorePassword = "changeit";
-
         String truststorePath = "/opt/sas/viya/config/etc/boss/custom-truststore.jks";
-
         String truststorePassword = "changeit";
  
         // Load the keystore (client certificate)
-
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-
         try (FileInputStream keyStoreInputStream = new FileInputStream(keystorePath)) {
-
             keyStore.load(keyStoreInputStream, keystorePassword.toCharArray());
-
         }
  
         // Load the truststore (CA certificates)
-
         KeyStore trustStore = KeyStore.getInstance("JKS");
-
         try (FileInputStream trustStoreInputStream = new FileInputStream(truststorePath)) {
-
             trustStore.load(trustStoreInputStream, truststorePassword.toCharArray());
-
         }
  
         // Initialize KeyManagerFactory with the keystore
-
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-
         keyManagerFactory.init(keyStore, keystorePassword.toCharArray());
  
         // Initialize TrustManagerFactory with the truststore
-
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-
         trustManagerFactory.init(trustStore);
  
         // Create and initialize SSLContext
-
         SSLContext sslContext = SSLContext.getInstance("TLS");
-
         sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), null);
  
         // Create HttpClient with SSLContext
-
         HttpClient httpClient = HttpClient.newBuilder()
-
                 .version(HttpClient.Version.HTTP_2)
-
                 .sslContext(sslContext) // Use the custom SSLContext
-
                 .build();
  
         // OAuth 2.0 Token Retrieval
-
         String clientId = "fe82e73c-9579-4e8a-ad33-9a3b86eedcc3";
-
         String clientSecret = "b51c04e5-a205-4598-8138-426eada81e80";
-
         String tokenUrl = "https://devmag.adcb.com/auth/oauth/v2/token";
-
         System.out.println("Preparing to hit the token URL: " + tokenUrl);
  
         // Prepare the request body for token retrieval
-
         String requestBody = "grant_type=client_credentials" +
-
                 "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8) +
-
                 "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8) +
-
                 "&scope=AccountDetails AccountBalancesDetails CustomerPersonalDetails";
-
         System.out.println("Token request body prepared: " + requestBody);
  
         // Send token request
-
         HttpRequest tokenRequest = HttpRequest.newBuilder()
-
                 .uri(URI.create(tokenUrl))
-
                 .header("Content-Type", "application/x-www-form-urlencoded")
-
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-
                 .build();
  
         System.out.println("Sending token request...");
-
         HttpResponse<String> tokenResponse = httpClient.send(tokenRequest, HttpResponse.BodyHandlers.ofString());
-
         System.out.println("Token response received: " + tokenResponse.body());
  
         // Parse the token response
-
         JSONObject tokenJson = new JSONObject(tokenResponse.body());
-
         String accessToken = tokenJson.optString("access_token");
-
         if (accessToken == null || accessToken.isEmpty()) {
-
             throw new IOException("Failed to obtain access token");
-
         }
-
         System.out.println("Access token obtained: " + accessToken);
  
         // Fetch customer details using the access token
-
         String customerId = EntityID;
-
         String apiUrl = "https://devmag.adcb.com/v2/customer/details?customerId=" + customerId;
-
         System.out.println("Preparing to hit the customer info API URL: " + apiUrl);
  
         HttpRequest apiRequest = HttpRequest.newBuilder()
-
                 .uri(URI.create(apiUrl))
-
                 .header("Content-Type", "application/json")
-
                 .header("Authorization", "Bearer " + accessToken)
-
                 .header("x-fapi-interaction-id", UUID.randomUUID().toString())
-
                 .GET()
-
                 .build();
  
         System.out.println("Connection established to " + apiUrl);
-
         HttpResponse<String> apiResponse = httpClient.send(apiRequest, HttpResponse.BodyHandlers.ofString());
-
         System.out.println("Response received: " + apiResponse.body());
  
         // Parse JSON response
-
         JSONObject jsonObject = new JSONObject(apiResponse.body());
-
         JSONObject data = jsonObject.optJSONObject("Data");
-
         if (data == null) {
-
             throw new IOException("No Data object in response");
-
         }
  
         JSONObject customer = data.optJSONObject("Customer");
-
         if (customer == null) {
-
             throw new IOException("No Customer object in response");
-
         }
  
         JSONObject customerPersonalDetails = customer.optJSONObject("CustomerPersonalDetails");
-
         if (customerPersonalDetails == null) {
-
             throw new IOException("No CustomerPersonalDetails in response");
-
         }
  
         // Parse Contact Details
-
         JSONObject contactDetails = customerPersonalDetails.optJSONObject("ContactDetails");
-
         if (contactDetails != null) {
-
             map.put("ADDRESS_ZIP", contactDetails.optString("AddressZip", ""));
-
             map.put("COUNTRY", contactDetails.optString("Country", ""));
-
             map.put("CITY", contactDetails.optString("City", ""));
-
             map.put("HOME_LANDLINE_NUMBER", contactDetails.optString("HomeLandlineNumber", ""));
-
             map.put("ADDRESS_LINE_1", contactDetails.optString("AddressLine1", ""));
-
             map.put("ADDRESS_LINE_2", contactDetails.optString("AddressLine2", ""));
-
             map.put("ADDRESS_LINE_3", contactDetails.optString("AddressLine3", ""));
-
             map.put("MOBILE_NUMBER", contactDetails.optString("MobileNumber", ""));
-
             map.put("PHONE_NUMBER", contactDetails.optString("PhoneNumber", ""));
-
             map.put("EMAIL_ID", contactDetails.optString("EmailId", ""));
-
             map.put("STATE", contactDetails.optString("State", ""));
-
             map.put("OFFICE_LANDLINE_NUMBER", contactDetails.optString("OfficeLandlineNumber", ""));
-
             map.put("FAX", contactDetails.optString("Fax", ""));
-
         }
  
         // Parse Personal Info, Employer Info, and KYC Info (omitted for brevity)
-
         // You can reuse the existing logic for parsing these sections.
  
         return map;
-
     }
-
 }
- 
