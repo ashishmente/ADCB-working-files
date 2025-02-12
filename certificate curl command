@@ -66,3 +66,4 @@ connection.setRequestProperty("Accept", "application/json");
 System.setProperty("javax.net.debug", "ssl,handshake");
 
 --cert mycert.p12 --cert-type P12 --pass changeit
+--cert mycert.p12 --cert-type P12 --pass changeit
