@@ -1,0 +1,50 @@
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.UUID;
+
+public class HttpClientExample {
+    public static void main(String[] args) {
+        try {
+            String customerId = "12345"; // Example customer ID
+            String accessToken = "your_access_token_here"; // Replace with actual token
+
+            String apiUrl = "https://devmag.adcb.com/v2/customer/details?customerId=" + customerId;
+
+            System.out.println("Preparing to hit the customer info API URL: " + apiUrl);
+
+            HttpClient httpClient = HttpClient.newHttpClient();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Accept", "application/json")
+                    .header("x-fapi-interaction-id", UUID.randomUUID().toString())
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Print Response Headers
+            System.out.println("\nResponse Headers:");
+            response.headers().map().forEach((key, value) -> System.out.println(key + ": " + value));
+
+            // Handle response based on status code
+            int statusCode = response.statusCode();
+            System.out.println("\nHTTP Status Code: " + statusCode);
+
+            if (statusCode >= 200 && statusCode < 300) {
+                // Success response
+                System.out.println("Response received: " + response.body());
+            } else {
+                // Error response
+                System.err.println("Error response received: " + response.body());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
