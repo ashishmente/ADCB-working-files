@@ -58,3 +58,10 @@ try (BufferedReader reader = new BufferedReader(new InputStreamReader(
 
 // Print the exact response received from the server
 System.out.println("Response received: " + jsonResponse);
+
+
+connection.getRequestProperties().forEach((key, value) -> System.out.println(key + ": " + value));
+connection.setRequestProperty("Accept", "application/json");
+
+System.setProperty("javax.net.debug", "ssl,handshake");
+
