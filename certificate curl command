@@ -37,3 +37,24 @@ openssl pkcs12 -export -in mycert.crt -inkey mykey.key -out mycert.p12 -passout 
   
 keytool -importkeystore -srckeystore mycert.p12 -srcstoretype PKCS12 -srcstorepass changeit \
         -destkeystore custom-keystore.jks -deststoretype JKS -deststorepass changeit
+
+
+String jsonResponse = "";
+int responseCode = apiConnection.getResponseCode(); // Get the response code
+System.out.println("Response Code: " + responseCode);
+
+try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+        (responseCode >= 200 && responseCode < 300) ? apiConnection.getInputStream() 
+                                                    : apiConnection.getErrorStream(), // Read actual response
+        StandardCharsets.UTF_8))) {
+
+    StringBuilder responseContent = new StringBuilder();
+    String line;
+    while ((line = reader.readLine()) != null) {
+        responseContent.append(line);
+    }
+    jsonResponse = responseContent.toString();
+}
+
+// Print the exact response received from the server
+System.out.println("Response received: " + jsonResponse);
