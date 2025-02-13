@@ -1,0 +1,4 @@
+String requestBody = "grant_type=" + URLEncoder.encode("client_credentials", "UTF-8") +
+                     "&client_id=" + URLEncoder.encode(clientId, "UTF-8") +
+                     "&client_secret=" + URLEncoder.encode(clientSecret, "UTF-8") +
+                     "&scope=" + URLEncoder.encode("AccountDetails AccountBalancesDetails CustomerPersonalDetails", "UTF-8");
