@@ -1,0 +1,40 @@
+ <?xml version="1.0" encoding="UTF-8"?><entityResponse xmlns="urn:SASFraudManagement:RTF_3_2" entityType="entityType">
+	<entityID>${/entityRequest/entityID}</entityID>
+	<contactID>${/entityRequest/contactID}</contactID>
+	<contactType>${/entityRequest/contactType}</contactType>
+	<multiOrg>${/entityRequest/multiOrg}</multiOrg>
+
+	<blockGroupCode/>
+
+	<detailGroup name="demographic">
+		<detail name="ACCOUNT ID">${AccountId}</detail>
+		<detail name="ACCOUNT STATUS">${Status}</detail>
+		<detail name="ACCOUNT TYPE">${AccountType}</detail>
+		<detail name="ACCOUNT TYPE Description">${Description}</detail>
+		<detail name="ACCOUNT CURRENCY">${Currency}</detail>
+		<detail name="ACCOUNT OPEN DATE">${OpeningDate}</detail>
+		<detail name="ACCOUNT BALANCE">${Amount}</detail>
+		<detail name="EFFECTIVE ACCT. BAL.">${AmountAvailable}</detail>
+	</detailGroup>
+	
+	<detailGroup name="contact">
+		<detail name="FULL NAME">${FULL_NAME}</detail>
+		<detail name="ADDR_LINE_1">${ADDRESS_LINE_1}</detail>
+		<detail name="ADDR_LINE_2">${ADDRESS_LINE_2}</detail>
+		<detail name="ADDR_CITY_NAME">${CITY}</detail>
+		<detail name="ADDR_POSTAL_CODE">${ADDRESS_ZIP}</detail>
+		<detail name="ADDR_CNTRY_NAME">${COUNTRY}</detail>
+		<detail name="HOME_PHONE_1">${HOME_LANDLINE_NUMBER}</detail>
+		<detail name="WORK_PHONE_1">${OFFICE_LANDLINE_NUMBER}</detail>
+		<detail name="MOBILE_PHONE_1">${MOBILE_NUMBER}</detail>
+		<detail name="EMAIL">${EMAIL_ID}</detail>
+		<detail name="DATE_OF_BIRTH">${DATE_OF_BIRTH}</detail>
+		<detail name="PERSONAL_ID_NUM">${UAE_NATIONAL_ID}</detail>
+		<detail name="LANG_CODE">${LANGUAGE_PREFERENCE}</detail>
+	</detailGroup>
+
+	<systemBlock1/>
+	<systemBlock2/>
+	<transactionBlock/>
+	
+</entityResponse>
