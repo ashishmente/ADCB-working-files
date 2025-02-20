@@ -1,0 +1,19 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+<!-- Define the REST GET endpoint using Jetty -->
+<route>
+<!-- Expose a REST service using Jetty -->
+<from uri="jetty:http://0.0.0.0:8080/myapp/api/{param1}/{param2}" />
+<!-- Access the input parameters -->
+<setBody>
+<simple>
+<![CDATA[
+                    The value of param1 is ${header.param1} and the value of param2 is ${header.param2}
+                ]]>
+</simple>
+</setBody>
+ 
+        <!-- Send the response back to the client -->
+<to uri="log:received?level=INFO" />
+<to uri="stream:out" />
+</route>
+</routes>
