@@ -17,3 +17,29 @@
 <to uri="stream:out" />
 </route>
 </routes>
+
+
+
+
+<camelContext xmlns="http://camel.apache.org/schema/spring">
+<!-- Configure the REST component -->
+<restConfiguration component="jetty" host="0.0.0.0" port="8080" bindingMode="json" />
+ 
+    <!-- Define the REST API route -->
+<rest path="/api/process/{param1}/{param2}/{param3}">
+<get>
+<to uri="direct:processParams" />
+</get>
+</rest>
+ 
+    <!-- Define the processing route -->
+<route id="processParamsRoute">
+<from uri="direct:processParams" />
+<log message="Received parameters: param1 = ${header.param1}, param2 = ${header.param2}, param3 = ${header.param3}" />
+<setBody>
+<simple>Processed params: ${header.param1}, ${header.param2}, ${header.param3}</simple>
+</setBody>
+</route>
+</camelContext>
+
+has context menu
