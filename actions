@@ -42,4 +42,23 @@
 </route>
 </camelContext>
 
-has context menu
+
+
+<restConfiguration component="jetty" host="0.0.0.0" port="8080"/>
+
+    <rest path="/myapp/api">
+        <get uri="/{param1}/{param2}">
+            <route>
+                <from uri="rest:get:myapp/api/{param1}/{param2}" />
+                <setBody>
+                    <simple>
+                        <![CDATA[
+                            The value of param1 is ${header.param1} and the value of param2 is ${header.param2}
+                        ]]>
+                    </simple>
+                </setBody>
+                <to uri="log:received?level=INFO" />
+                <to uri="stream:out" />
+            </route>
+        </get>
+    </rest>
