@@ -62,3 +62,10 @@
             </route>
         </get>
     </rest>
+
+
+<simple>
+                <![CDATA[
+                {"actionable_entity_id_type": "Customertest"}
+                ]]>
+            </simple>
