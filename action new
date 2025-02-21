@@ -1,0 +1,32 @@
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <!-- Define a direct HTTP endpoint using Jetty with path parameters -->
+    <route id="directHttpRoute">
+        <from uri="jetty:http://0.0.0.0:8080/process/{param1}/{param2}/{param3}"/>
+        <log message="Received request with URL: ${header.CamelHttpUri}"/>
+        
+        <!-- Extract Path Parameters -->
+        <setHeader name="param1">
+            <simple>${header.param1}</simple>
+        </setHeader>
+        <setHeader name="param2">
+            <simple>${header.param2}</simple>
+        </setHeader>
+        <setHeader name="param3">
+            <simple>${header.param3}</simple>
+        </setHeader>
+
+        <log message="Extracted Parameters - Param1: ${header.param1}, Param2: ${header.param2}, Param3: ${header.param3}"/>
+
+        <!-- Set JSON response -->
+        <setBody>
+            <simple>
+                {"status": "success", "param1": "${header.param1}", "param2": "${header.param2}", "param3": "${header.param3}"}
+            </simple>
+        </setBody>
+        
+        <!-- Set response headers -->
+        <setHeader name="Content-Type">
+            <constant>application/json</constant>
+        </setHeader>
+    </route>
+</routes>
