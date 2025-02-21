@@ -69,4 +69,5 @@
                 {"actionable_entity_id_type": "Customertest"}
                 ]]>
             </simple>
+
 <constant>{"actionable_entity_id_type": "Customertest"}</constant>
