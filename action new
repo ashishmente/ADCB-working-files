@@ -30,3 +30,39 @@
         </setHeader>
     </route>
 </routes>
+
+
+
+
+import org.apache.camel.Exchange;
+import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Component("jsonProcessor")
+public class JsonProcessor {
+
+    public void process(Exchange exchange) {
+        String param1 = exchange.getIn().getHeader("param1", String.class);
+        String param2 = exchange.getIn().getHeader("param2", String.class);
+        String param3 = exchange.getIn().getHeader("param3", String.class);
+
+        // Construct JSON response with parameters formatted as "param1/param2/param3"
+        Map<String, String> jsonResponse = new HashMap<>();
+        jsonResponse.put("ProcessedParams", param1 + "/" + param2 + "/" + param3);
+
+        try {
+            // Convert Java object to JSON string using Jackson
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(jsonResponse);
+
+            exchange.getMessage().setBody(jsonString);
+            exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
+        } catch (Exception e) {
+            exchange.getMessage().setBody("{\"error\":\"Failed to process request\"}");
+        }
+    }
+}
+
