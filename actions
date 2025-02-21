@@ -116,3 +116,24 @@ jsonResponse = String.format(     "{\"CustomerId\": \"%s\"}", CustomerId );
 
 <lang:groovy id="respfield" script-source="classpath:groovy/sendResp.groovy"/>
 <bean ref="respfield" method = "process"/>
+
+
+
+
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <!-- Configure REST to use Jetty -->
+    <restConfiguration component="jetty" host="0.0.0.0" port="8080" bindingMode="json" />
+
+    <!-- Single Route to Handle Request -->
+    <route id="singleRestRoute">
+        <from uri="jetty:http://0.0.0.0:8080/api/process/{param1}/{param2}/{param3}" />
+        <log message="Received parameters: param1=${header.param1}, param2=${header.param2}, param3=${header.param3}" />
+        <setBody>
+            <simple>{"param1": "${header.param1}", "param2": "${header.param2}", "param3": "${header.param3}"}</simple>
+        </setBody>
+        <setHeader headerName="Content-Type">
+            <constant>application/json</constant>
+        </setHeader>
+    </route>
+</routes>
