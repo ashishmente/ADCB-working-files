@@ -108,7 +108,9 @@ public class sendResp{
     }
 	
 }
-
+<setHeader name="Content-Type">
+				<constant>Application/Json</constant>
+			</setHeader>
 
 <lang:groovy id="respfield" script-source="classpath:groovy/sendResp.groovy"/>
 <bean ref="respfield" method = "process"/>
