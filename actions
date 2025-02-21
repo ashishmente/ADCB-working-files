@@ -71,3 +71,14 @@
             </simple>
 
 <constant>{"actionable_entity_id_type": "Customertest"}</constant>
+
+
+
+<setHeader name="Content-Type">
+            <constant>application/json</constant>
+        </setHeader>
+
+        <!-- Set response body as JSON -->
+        <setBody>
+            <constant>{"actionable_entity_id_type": "Customertest"}</constant>
+        </setBody>
