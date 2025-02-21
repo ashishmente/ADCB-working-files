@@ -66,3 +66,14 @@ public class JsonProcessor {
     }
 }
 
+
+<setHeader name="param1">
+            <simple>${header.CamelHttpPath.split('/')[2]}</simple>
+        </setHeader>
+        <setHeader name="param2">
+            <simple>${header.CamelHttpPath.split('/')[3]}</simple>
+        </setHeader>
+        <setHeader name="param3">
+            <simple>${header.CamelHttpPath.split('/')[4]}</simple>
+        </setHeader>
+
