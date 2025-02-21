@@ -137,3 +137,7 @@ jsonResponse = String.format(     "{\"CustomerId\": \"%s\"}", CustomerId );
         </setHeader>
     </route>
 </routes>
+
+
+<bean id="jacksonDataFormat" class="org.apache.camel.component.jackson.JacksonDataFormat"/>
+<marshal ref="jacksonDataFormat"/>
