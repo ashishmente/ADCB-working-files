@@ -82,3 +82,33 @@
         <setBody>
             <constant>{"actionable_entity_id_type": "Customertest"}</constant>
         </setBody>
+
+
+
+
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.json.JSONObject;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.*;
+
+public class sendResp{
+    
+    public void process(Exchange exchange) throws Exception {
+       
+        
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("actionable_entity_id_type", "Customertest" );
+      
+
+        // Set the JSON response as the exchange body
+        exchange.getIn().setBody(responseJson);
+    }
+	
+}
+
+
+<lang:groovy id="respfield" script-source="classpath:groovy/sendResp.groovy"/>
+<bean ref="respfield" method = "process"/>
